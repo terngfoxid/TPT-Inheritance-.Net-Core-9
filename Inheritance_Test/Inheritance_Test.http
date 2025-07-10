@@ -1,0 +1,6 @@
+@Inheritance_Test_HostAddress = http://localhost:5182
+
+GET {{Inheritance_Test_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
