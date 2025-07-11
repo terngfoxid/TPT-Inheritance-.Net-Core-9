@@ -6,6 +6,6 @@ Second: Scaffolding reverse Enginner DB to Model Class
 
 Third: use partial class for create Inheritance
 
-Forth: Overide Context Files for use TPT
+Forth: Inherit Context from Second Step and Overide Context Files with TPT
 
 Good Luck!! Have Fun!!!
