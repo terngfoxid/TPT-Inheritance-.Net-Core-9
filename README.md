@@ -8,6 +8,7 @@
 ## Second: Scaffolding reverse Enginner DB to Model Class.
 VS Code
 > dotnet ef dbcontext scaffold "Connection String" Microsoft.EntityFrameworkCore.SqlServer
+
 Visual Studio
 > Scaffold-DbContext 'Connection String' Microsoft.EntityFrameworkCore.SqlServer
 
