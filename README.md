@@ -36,10 +36,10 @@ Some relation need to Add Ignore Config like this.
 
 Because
 > Container is Inherit from Component.  
-> --> public partial class Container:Component  
+> --> public partial class Container : Component  
 > Page is Inherit from Container.  
-> --> public partial class Page:Container  
-> EF core is confuse between ( Page is Container is Component ) and Container.Page
+> --> public partial class Page : Container  
+> EF core is confuse between (Component)Page.Page and (Component)Page.Container.Page
 
 ## Fifth: Register Your Custom Context to program.cs builder service.
 > builder.Services.AddDbContext<NewContext>();
