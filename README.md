@@ -1,26 +1,26 @@
-This Project is Example TPT Inheritance with EF Core pls see CustomContext and MetadataFiles.
+# This Project is Example TPT Inheritance with EF Core pls see CustomContext and MetadataFiles.
 
-First: The DB need relation PK of weak entity use same PK of strong entity as FK , All weak entity pls set auto increase ID "off".
+## First: The DB need relation PK of weak entity use same PK of strong entity as FK , All weak entity pls set auto increase ID "off".
 
------Example-----\n
-Component have ID is PK\n
-Banner is Component too, Banner ID is PK and FK to Component ID\n
+-----Example-----
+> Component have ID is PK
+> Banner is Component too, Banner ID is PK and FK to Component ID
 
-Second: Scaffolding reverse Enginner DB to Model Class.
+## Second: Scaffolding reverse Enginner DB to Model Class.
 
-Third: Use partial class for create Inheritance.
+## Third: Use partial class for create Inheritance.
 
------Example-----\n
-Coding like this -> Banner : Component\n
+-----Example-----
+> Banner : Component
 
-Forth: Inherit Context from Second Step and Overide Context Files with TPT on OnModelCreating Method.
+## Forth: Inherit Context from Second Step and Overide Context Files with TPT on OnModelCreating Method.
 
------Example-----\n
-Coding like this -> NewContext : GenerateContextFormEFcore\n
+-----Example-----
+> NewContext : GenerateContextFormEFcore
 
-Fifth: Register Your Custom Context to program.cs builder service.
+## Fifth: Register Your Custom Context to program.cs builder service.
 
------Example-----\n
-builder.Services.AddDbContext<NewContext>();\n
+-----Example-----
+> builder.Services.AddDbContext<NewContext>();
 
 Good Luck!! Have Fun!!!
