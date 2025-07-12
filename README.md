@@ -19,7 +19,9 @@ Visual Studio
 > public partial class NewContext : GenerateContextFormEFcore
 
 Overide OnModelCreating Method
-> protected override void OnModelCreating(ModelBuilder modelBuilder)
+> protected override void OnModelCreating(ModelBuilder modelBuilder){  
+> .....your code  
+> }
 
 Example TPT Config
 > modelBuilder.Entity<Component>().UseTptMappingStrategy().ToTable("Component");  
