@@ -13,10 +13,17 @@ Visual Studio
 > Scaffold-DbContext 'Connection String' Microsoft.EntityFrameworkCore.SqlServer
 
 ## Third: Use partial class for create Inheritance.
-> Banner : Component
+> public partial class Banner:Component
 
-## Forth: Inherit Context from Second Step and Overide Context Files with TPT on OnModelCreating Method.
-> NewContext : GenerateContextFormEFcore
+## Forth: Inherit Context from Second Step and Overide Context Files with TPT at OnModelCreating Method.
+> public partial class NewContext : GenerateContextFormEFcore
+
+Overide OnModelCreating Method
+> protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+Example TPT Config
+> modelBuilder.Entity<Component>().UseTptMappingStrategy().ToTable("Component");  
+> modelBuilder.Entity<Banner>().ToTable("Banner");
 
 ## Fifth: Register Your Custom Context to program.cs builder service.
 > builder.Services.AddDbContext<NewContext>();
