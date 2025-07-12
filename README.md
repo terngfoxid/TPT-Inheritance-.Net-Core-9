@@ -18,14 +18,26 @@ Visual Studio
 ## Forth: Inherit Context from Second Step and Overide Context Files with TPT at OnModelCreating Method.
 > public partial class NewContext : GenerateContextFormEFcore
 
-Overide OnModelCreating Method
+Overide OnModelCreating Method.
 > protected override void OnModelCreating(ModelBuilder modelBuilder){  
-> .....your code  
+>   .....your overide code  
 > }
 
-Example TPT Config
+Example TPT Config.
 > modelBuilder.Entity<Component>().UseTptMappingStrategy().ToTable("Component");  
 > modelBuilder.Entity<Banner>().ToTable("Banner");
+
+Some relation need to Add Ignore Config like this.
+> modelBuilder.Entity<Component>().UseTptMappingStrategy().ToTable("Component");  
+> modelBuilder.Entity<Container>().UseTptMappingStrategy().ToTable("Container");  
+> modelBuilder.Entity<Container>().Ignore(c => c.Page);  
+> modelBuilder.Entity<Page>().ToTable("Page");
+Why
+> Container is Inherit from Component.  
+> public partial class Container:Component  
+> Page is Inherit from Container.  
+> public partial class Page:Container  
+> EF core is confuse between ( Page is Container is Component ) and Container.Page
 
 ## Fifth: Register Your Custom Context to program.cs builder service.
 > builder.Services.AddDbContext<NewContext>();
