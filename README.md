@@ -31,8 +31,8 @@ Some relation need to Add Ignore Config like this.
 > modelBuilder.Entity<Component>().UseTptMappingStrategy().ToTable("Component");  
 > modelBuilder.Entity<Container>().UseTptMappingStrategy().ToTable("Container");  
 > modelBuilder.Entity<Container>().Ignore(c => c.Page);  
-> modelBuilder.Entity<Page>().ToTable("Page");
-Why
+> modelBuilder.Entity<Page>().ToTable("Page");  
+Because
 > Container is Inherit from Component.  
 > public partial class Container:Component  
 > Page is Inherit from Container.  
