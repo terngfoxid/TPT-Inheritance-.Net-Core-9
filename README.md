@@ -3,7 +3,7 @@
 ## First: The DB need relation PK of weak entity use same PK of strong entity as FK , All weak entity pls set auto increase ID "off".
 > Component's ID is PK
 
-> Banner is Component too, Banner's ID is PK and FK relate to Component's ID
+> Banner is Subtype of Component, Banner's ID is PK and FK relate to Component's ID
 
 ## Second: Scaffolding reverse Enginner DB to Model Class.
 VS Code
