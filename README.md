@@ -23,10 +23,11 @@ Overide OnModelCreating Method.
 >   .....your overide code  
 > }
 
-Example TPT Config.
+Example Basic TPT Config.
 > modelBuilder.Entity<Component>().UseTptMappingStrategy().ToTable("Component");  
 > modelBuilder.Entity<Banner>().ToTable("Banner");
 
+Example Advance TPT Config.  
 Some relation need to Add Ignore Config like this.
 > modelBuilder.Entity<Component>().UseTptMappingStrategy().ToTable("Component");  
 > modelBuilder.Entity<Container>().UseTptMappingStrategy().ToTable("Container");  
@@ -35,9 +36,9 @@ Some relation need to Add Ignore Config like this.
 
 Because
 > Container is Inherit from Component.  
-> public partial class Container:Component  
+> --> public partial class Container:Component  
 > Page is Inherit from Container.  
-> public partial class Page:Container  
+> --> public partial class Page:Container  
 > EF core is confuse between ( Page is Container is Component ) and Container.Page
 
 ## Fifth: Register Your Custom Context to program.cs builder service.
