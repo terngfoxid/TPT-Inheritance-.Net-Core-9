@@ -13,7 +13,7 @@ Visual Studio
 > Scaffold-DbContext 'Connection String' Microsoft.EntityFrameworkCore.SqlServer
 
 ## Third: Use partial class for create Inheritance.
-> public partial class Banner:Component
+> public partial class Banner : Component
 
 ## Forth: Inherit Context from Second Step and Overide Context Files with TPT at OnModelCreating Method.
 > public partial class NewContext : GenerateContextFormEFcore
@@ -40,6 +40,18 @@ Because
 > Page is Inherit from Container.  
 > --> public partial class Page : Container  
 > EF core is confuse between (Component)Page.Page and (Component)Page.Container.Page
+
+Example Expert TPT Config.  
+Some Many to Many relation between Superclass(Parent) and Subclass(Child) need to Add Ignore Config like this.
+> modelBuilder.Entity<Containing>(entity =>  
+> {  
+>   entity.Ignore(C => C.Container);  
+>   entity.HasOne(d => d.Component).WithMany(p => p.Containings).HasConstraintName("FK_Containing_Component");  
+> });
+
+Because
+> Container is Subtype of Component, but it can containing other Component (Many to Many with Containing Table)  
+> EF core is confuse between (Component)Containing.Component and (Component)Containing.Container
 
 ## Fifth: Register Your Custom Context to program.cs builder service.
 > builder.Services.AddDbContext<NewContext>();
