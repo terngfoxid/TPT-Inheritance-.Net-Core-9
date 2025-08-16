@@ -15,6 +15,8 @@ public partial class Component
 
     public string? Name { get; set; }
 
+    public string? Type { get; set; }
+
     [InverseProperty("IdNavigation")]
     public virtual Banner? Banner { get; set; }
 

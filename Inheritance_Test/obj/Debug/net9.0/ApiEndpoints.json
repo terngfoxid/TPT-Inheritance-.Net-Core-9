@@ -47,8 +47,8 @@
   },
   {
     "ContainingType": "Inheritance_Test.Controllers.ComponentController",
-    "Method": "ExampleBannerItem",
-    "RelativePath": "Component/example/banner_item",
+    "Method": "ExamplePage",
+    "RelativePath": "Component/example/page",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -57,12 +57,18 @@
   },
   {
     "ContainingType": "Inheritance_Test.Controllers.ComponentController",
-    "Method": "ExamplePage",
-    "RelativePath": "Component/example/page",
+    "Method": "ExampleBannerItem",
+    "RelativePath": "Component/getbyid",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {

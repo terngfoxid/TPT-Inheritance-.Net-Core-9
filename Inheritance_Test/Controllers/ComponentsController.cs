@@ -10,6 +10,9 @@ using Inheritance_Test.Models;
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Text.Json;
+using System.Reflection.Metadata;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Inheritance_Test.Controllers
 {
@@ -52,8 +55,8 @@ namespace Inheritance_Test.Controllers
         {
             try
             {
-                if (!json.TryGetProperty("componentType", out JsonElement typeElement))
-                    return BadRequest("Missing 'componentType' field.");
+                if (!json.TryGetProperty("type", out JsonElement typeElement))
+                    return BadRequest("Missing 'type' field.");
 
                 string? typeName = typeElement.GetString();
                 Type? type = Type.GetType(typeName);
@@ -93,8 +96,8 @@ namespace Inheritance_Test.Controllers
         {
             try
             {
-                if (!json.TryGetProperty("componentType", out JsonElement typeElement))
-                    return BadRequest("Missing 'componentType' field.");
+                if (!json.TryGetProperty("type", out JsonElement typeElement))
+                    return BadRequest("Missing 'type' field.");
 
                 string? typeName = typeElement.GetString();
                 Type? type = Type.GetType(typeName);
@@ -148,12 +151,64 @@ namespace Inheritance_Test.Controllers
             return Ok(page);
         }
 
-        [HttpGet("example/banner_item")]
-        public async Task<IActionResult> ExampleBannerItem()
+        [HttpGet("getbyid")]
+        public async Task<IActionResult> ExampleBannerItem(int id)
         {
-            Banner? banner = await _context.Banners.FirstOrDefaultAsync(b => b.Id == 67);
-            banner.SetIdValue();
-            return Ok(banner);
+            Component? component = await _context.Components.FirstOrDefaultAsync(b => b.Id == id);
+            try
+            {
+                Type? dynamicType = Type.GetType(component.Type);
+                if (dynamicType != null)
+                {
+
+                    // 2. Get OfType<T>() and apply it to _context.Components
+                    MethodInfo? ofTypeMethod = typeof(Queryable)
+                        .GetMethods()
+                        .FirstOrDefault(m => m.Name == "OfType" && m.IsGenericMethod && m.GetParameters().Length == 1)?
+                        .MakeGenericMethod(dynamicType);
+
+                    if (ofTypeMethod == null)
+                        return StatusCode(500, "Failed to reflect OfType<T>()");
+
+                    IQueryable baseQuery = _context.Components;
+                    IQueryable filteredQuery = (IQueryable)ofTypeMethod.Invoke(null, new object[] { baseQuery })!;
+
+                    // 3. Build expression: x => x.Id == id
+                    var parameter = Expression.Parameter(dynamicType, "x");
+                    var property = Expression.Property(parameter, "Id");
+                    var constant = Expression.Constant(id);
+                    var equality = Expression.Equal(property, constant);
+                    var lambda = Expression.Lambda(equality, parameter);
+
+                    // 4. Apply Where<T>(source, predicate)
+                    MethodInfo whereMethod = typeof(Queryable).GetMethods()
+                        .First(m => m.Name == "Where" && m.GetParameters().Length == 2)
+                        .MakeGenericMethod(dynamicType);
+
+                    var whereCall = whereMethod.Invoke(null, new object[] { filteredQuery, lambda })!;
+
+                    // 5. Reflect and invoke FirstOrDefaultAsync<T>
+                    MethodInfo? firstOrDefaultAsync = typeof(EntityFrameworkQueryableExtensions)
+                        .GetMethods()
+                        .Where(m => m.Name == "FirstOrDefaultAsync" && m.GetParameters().Length == 2)
+                        .First()
+                        .MakeGenericMethod(dynamicType);
+
+                    var task = (Task)firstOrDefaultAsync.Invoke(null, new object[] { whereCall, CancellationToken.None })!;
+                    await task.ConfigureAwait(false);
+
+                    var resultProperty = task.GetType().GetProperty("Result");
+                    var result = resultProperty?.GetValue(task);
+
+                    (result as Component).SetIdValue();
+                    return Ok(result);
+                }
+                return Ok(component);
+            }
+            catch
+            {
+                return NotFound();
+            }
         }
     }
 }
