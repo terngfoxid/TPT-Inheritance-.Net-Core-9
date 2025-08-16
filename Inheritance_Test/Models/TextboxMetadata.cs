@@ -4,7 +4,10 @@ namespace Inheritance_Test.Models
 {
     public partial class Textbox : Component
     {
-        [Column("ID")]
-        public int TextboxID { get; set; }
+        public override void SetIdValue()
+        {
+            Component component = (Component)this;
+            this.Id = component.Id;
+        }
     }
 }

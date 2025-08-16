@@ -4,13 +4,10 @@ namespace Inheritance_Test.Models
 {
     public partial class Container:Component
     {
-        [Column("ID")]
-        public int ContainerID { get; set; }
-    }
-
-    public partial class Page : Container
-    {
-        [Column("ID")]
-        public int PageID { get; set; }
+        public override void SetIdValue()
+        {
+            Component component = (Component)this;
+            this.Id = component.Id;
+        }
     }
 }

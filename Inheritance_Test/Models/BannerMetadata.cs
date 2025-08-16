@@ -5,7 +5,10 @@ namespace Inheritance_Test.Models
 {
     public partial class Banner:Component
     {
-        [Column("ID")]
-        public int BannerID { get; set; }
+        public override void SetIdValue()
+        {
+            Component component = (Component)this;
+            this.Id = component.Id;
+        }
     }
 }

@@ -9,11 +9,20 @@ namespace Inheritance_Test.Data
         {
             //Overide With TPT
             modelBuilder.Entity<Component>().UseTptMappingStrategy().ToTable("Component");
+
             modelBuilder.Entity<Banner>().ToTable("Banner");
+            modelBuilder.Entity<Banner>().HasBaseType<Component>();
+
             modelBuilder.Entity<Textbox>().ToTable("Textbox");
+            modelBuilder.Entity<Textbox>().HasBaseType<Component>();
+
             modelBuilder.Entity<Container>().UseTptMappingStrategy().ToTable("Container");
+            modelBuilder.Entity<Container>().HasBaseType<Component>();
             modelBuilder.Entity<Container>().Ignore(c => c.Page);
+
             modelBuilder.Entity<Page>().ToTable("Page");
+            modelBuilder.Entity<Page>().HasBaseType<Container>();
+
 
             //Overide Many to Many Relation
             modelBuilder.Entity<Containing>(entity =>

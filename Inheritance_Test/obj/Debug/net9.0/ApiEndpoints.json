@@ -11,12 +11,74 @@
   },
   {
     "ContainingType": "Inheritance_Test.Controllers.ComponentController",
-    "Method": "Create",
-    "RelativePath": "Component/create",
+    "Method": "ClassName",
+    "RelativePath": "Component/classname",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Inheritance_Test.Controllers.ComponentController",
+    "Method": "Create",
+    "RelativePath": "Component/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "json",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Inheritance_Test.Controllers.ComponentController",
+    "Method": "ExampleBanner",
+    "RelativePath": "Component/example/banner",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Inheritance_Test.Controllers.ComponentController",
+    "Method": "ExampleBannerItem",
+    "RelativePath": "Component/example/banner_item",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Inheritance_Test.Controllers.ComponentController",
+    "Method": "ExamplePage",
+    "RelativePath": "Component/example/page",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Inheritance_Test.Controllers.ComponentController",
+    "Method": "Update",
+    "RelativePath": "Component/update",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "json",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

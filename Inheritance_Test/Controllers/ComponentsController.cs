@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Inheritance_Test.Data;
 using Inheritance_Test.Models;
 using Newtonsoft.Json;
+using System.Reflection;
+using System.Text.Json;
 
 namespace Inheritance_Test.Controllers
 {
@@ -16,7 +18,6 @@ namespace Inheritance_Test.Controllers
     public class ComponentController : ControllerBase
     {
         private readonly CustomContext _context;
-        private InheritanceTestContext OldContext = new InheritanceTestContext();
 
         public ComponentController(CustomContext context)
         {
@@ -26,72 +27,133 @@ namespace Inheritance_Test.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
-            var a = _context.Containers.Where(c => c.Id == 57).First();
-            a.Containings = _context.Containings.Where(c => c.ContainerId == 57).ToList();
-            foreach (var item in a.Containings)
-            {
-                item.Component = _context.Components.Where(t => t.Id == item.ComponentId).FirstOrDefault();
-
-                if(item.Component.GetType() == typeof(Banner))
-                {
-                    ((Banner)item.Component).Subdetails = _context.Subdetails.Where(t => t.BannerId == item.ComponentId).ToList();
-                }
-            }
-
-            var settings = new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            };
-
-            var json = JsonConvert.SerializeObject(a, settings);
-
-            return Ok(json);
+            return Ok();
         }
 
-        [HttpGet("create")]
-        public async Task<IActionResult> Create()
+
+        [HttpGet("classname")]
+        public async Task<IActionResult> ClassName()
         {
-            Page p = new Page();
-            p.Name = "TestPage3";
-            p.ContainerType = "Page3";
-            p.Pagename = "PageTestPrototypeContainer3";
-            Component Pcast = (Component)p;
+            string targetNamespace = "Inheritance_Test.Models";
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            var classNamesInNamespace = assembly.GetTypes()
+                .Where(t => t.IsClass && t.Namespace == targetNamespace)
+                .Select(t => new { 
+                    Name = t.Name,
+                    Namespace = t.Namespace,
+                    FullName = t.FullName,
+                }).ToList();
 
-            Banner banner = new Banner();
-            banner.Name = "bannerC1";
-            banner.ImageUrl = "urlc1";
-
-            Subdetail sub = new Subdetail();
-            sub.SubCode = "TestCode";
-            sub.Sublink = "TestLink";
-            banner.Subdetails.Add(sub);
-
-            Component bc = (Component)banner;
-
-            Textbox textbox = new Textbox();
-            textbox.Name = "textboxc1";
-            textbox.Header = "headerc1";
-            textbox.Text = "textc1";
-            Component tc = (Component)textbox;
-
-            _context.Add(Pcast);
-            _context.Add(bc);
-            _context.Add(tc);
-            _context.SaveChanges();
-
-            Containing containing1 = new Containing();
-            containing1.ContainerId = Pcast.Id;
-            containing1.ComponentId = bc.Id;
-            Containing containing2 = new Containing();
-            containing2.ContainerId = Pcast.Id;
-            containing2.ComponentId = tc.Id;
-
-            _context.Add(containing1);
-            _context.Add(containing2);
-            _context.SaveChanges();
-
-            return Ok("This is Create");
+            return Ok(classNamesInNamespace);
         }
 
+        [HttpPost("create")]
+        public async Task<IActionResult> Create([FromBody] JsonElement json)
+        {
+            try
+            {
+                if (!json.TryGetProperty("componentType", out JsonElement typeElement))
+                    return BadRequest("Missing 'componentType' field.");
+
+                string? typeName = typeElement.GetString();
+                Type? type = Type.GetType(typeName);
+
+                if (type == null)
+                    return BadRequest($"Unknown component type: {typeName}");
+
+                string rawJson = json.GetRawText();
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                object? deserialized = System.Text.Json.JsonSerializer.Deserialize(rawJson, type, options);
+
+                if (deserialized == null)
+                    return BadRequest("Failed to deserialize the input.");
+
+                if (deserialized is Component component)
+                {
+                    component.create();
+                    return Ok(component);
+                }
+
+                // Or handle generic object
+                return Ok(new { Message = $"Deserialized to {type.Name}", Data = deserialized });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+        }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> Update([FromBody] JsonElement json)
+        {
+            try
+            {
+                if (!json.TryGetProperty("componentType", out JsonElement typeElement))
+                    return BadRequest("Missing 'componentType' field.");
+
+                string? typeName = typeElement.GetString();
+                Type? type = Type.GetType(typeName);
+
+                if (type == null)
+                    return BadRequest($"Unknown component type: {typeName}");
+
+                string rawJson = json.GetRawText();
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                object? deserialized = System.Text.Json.JsonSerializer.Deserialize(rawJson, type, options);
+
+                if (deserialized == null)
+                    return BadRequest("Failed to deserialize the input.");
+
+                
+                if (deserialized is Component component)
+                {
+                    dynamic target = deserialized;
+                    component.Id = target.Id;
+                    component.update();
+                    return Ok(component);
+                }
+
+                // Or handle generic object
+                return Ok(new { Message = $"Deserialized to {type.Name}", Data = deserialized });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+        }
+
+
+        //get Example Structure
+        [HttpGet("example/banner")]
+        public async Task<IActionResult> ExampleBanner()
+        {
+            Banner banner = new Banner();
+            return Ok(banner);
+        }
+
+        [HttpGet("example/page")]
+        public async Task<IActionResult> ExamplePage()
+        {
+            Page page = new Page();
+            return Ok(page);
+        }
+
+        [HttpGet("example/banner_item")]
+        public async Task<IActionResult> ExampleBannerItem()
+        {
+            Banner? banner = await _context.Banners.FirstOrDefaultAsync(b => b.Id == 67);
+            banner.SetIdValue();
+            return Ok(banner);
+        }
     }
 }
