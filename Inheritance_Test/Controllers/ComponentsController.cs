@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Reflection.Metadata;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Inheritance_Test.Controllers
 {
@@ -200,7 +201,12 @@ namespace Inheritance_Test.Controllers
                     var resultProperty = task.GetType().GetProperty("Result");
                     var result = resultProperty?.GetValue(task);
 
-                    (result as Component).SetIdValue();
+                    if (result is Component componentResult)
+                    {
+                        dynamic target = result;
+                        target.Id = componentResult.Id;
+                        return Ok(target);
+                    }
                     return Ok(result);
                 }
                 return Ok(component);

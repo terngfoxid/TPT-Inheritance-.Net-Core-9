@@ -10,26 +10,20 @@ namespace Inheritance_Test.Models
         }
 
         private CustomContext db = new CustomContext();
-        public Component create()
+        public void create()
         {
             db.Add(this);
             db.SaveChanges();
-            SetIdValue();
-            return this;
+            dynamic result = this;
+            result.Id = this.Id;
         }
 
-        public Component update()
+        public void update()
         {
             db.Update(this);
             db.SaveChanges();
-            SetIdValue();
-            return this;
-        }
-
-        public virtual void SetIdValue()
-        {
-            Component component = (Component)this;
-            this.Id = component.Id;
+            dynamic result = this;
+            result.Id = this.Id;
         }
     }
 }
