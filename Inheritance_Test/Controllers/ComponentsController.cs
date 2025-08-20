@@ -153,7 +153,7 @@ namespace Inheritance_Test.Controllers
         }
 
         [HttpGet("getbyid")]
-        public async Task<IActionResult> ExampleBannerItem(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             Component? component = await _context.Components.FirstOrDefaultAsync(b => b.Id == id);
             try
